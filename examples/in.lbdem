@@ -1,0 +1,58 @@
+### Ergun
+
+### Initialization
+
+# Preliminaries
+units			cgs
+atom_style		granular
+atom_modify		map array
+
+boundary		f f f
+newton			off
+communicate		single vel yes 
+processors              * * * 
+
+# Declare domain
+region                  box block 0. ${lx} 0. ${ly} 0. ${lz} units box
+create_box              1 box
+
+neighbor                0.05 bin
+neigh_modify            delay 0
+
+### Setup
+
+# Material and interaction properties required
+fix				m1 all property/global youngsModulus peratomtype 5.e6
+fix				m2 all property/global poissonsRatio peratomtype 0.2
+fix				m3 all property/global coefficientRestitution peratomtypepair 1 0.5
+fix				m4 all property/global coefficientFriction peratomtypepair 1 0.05
+fix				m5 all property/global coefficientRollingFriction peratomtypepair 1 0.05
+
+# Particle Insertion
+region			factory block 0.0 1.5 0.0 1.5 2.4 2.61 units box
+fix				pts all particletemplate/sphere 1 atom_type 1 density constant 2.5 radius constant 0.05
+fix				pdd all particledistribution/discrete 14127 1 pts 1.0
+fix				ins all insert/pack seed 132412 distributiontemplate pdd insert_every 1000 overlapcheck yes &
+					all_in yes vel constant 0. 0. 0. region factory volumefraction_region 0.3 ntry_mc 1000000
+
+# Define the physics
+pair_style		gran model hertz tangential history rolling_friction cdt
+pair_coeff		* *
+fix             	lbcoupling all couple/lb/onetoone
+
+# Set boundary
+fix                     zwalls1 all wall/gran model hertz tangential history primitive type 1 zplane 1.5
+fix                     ywalls1 all wall/gran model hertz tangential history primitive type 1 yplane 0.0
+fix                     ywalls2 all wall/gran model hertz tangential history primitive type 1 yplane 1.5
+fix                     xwalls1 all wall/gran model hertz tangential history primitive type 1 xplane 0.0
+fix                     xwalls2 all wall/gran model hertz tangential history primitive type 1 xplane 1.5
+
+### Detailed settings
+# Integrator
+fix				integrate all nve/sphere
+
+# Gravity
+variable        g_red equal 981*(2.5-${rho_fluid})/2.5
+fix             grav all gravity ${g_red} vector 0 0 -1
+
+run			1
