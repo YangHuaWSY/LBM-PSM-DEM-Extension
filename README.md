@@ -7,5 +7,6 @@ Simply copy the code from src-PSM in this repository into LBDEM-coupling/src, an
 It should be noted that after modifying LIGGGHTS/src, the constitutive codes must be added to the Makefile.lib file, and liggghts must be recompiled.
 ## Reference
 Wang, S., Hou, P., Liu, Q., Sang, G., Liang, X., Dou, F., et al. (2025). Microparticle transport and clogging mechanisms in 3D complex rock fractures based on coupled lattice Boltzmann and discrete element method simulations. International Journal of Rock Mechanics and Mining Sciences, 195, 106259. https://doi.org/10.1016/j.ijrmms.2025.106259
+
 Wang, S., Hou, P., Wu, Z., Liu, Q., Sang, G., Rabatuly, M., et al. (2026). Mechanisms of suspended microparticle clogging in
 constricted channels: Insights from a lattice Boltzmann‐discrete element simulation. Water Resources Research, 62, e2025WR042425. https://doi.org/10.1029/2025WR042425
